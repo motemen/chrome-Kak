@@ -1,0 +1,103 @@
+* {
+    transition-duration: 0.2s;
+    transition-property: opacity, height, width, color, display;
+}
+html, body {
+    overflow: auto;
+}
+body {
+    padding: 8% 0 1%;
+    margin: 0;
+    background-color: #eee;
+}
+#content, #ruler {
+    margin: 2% 0;
+    line-height: 1.7em;
+}
+#content {
+    background-color: #fff;
+    -webkit-user-modify: read-write-plaintext-only;
+}
+
+.vertical #content {
+    padding: 3em 2em;
+    height: 20.5em;
+}
+.vertical #ruler {
+    height: 1em;
+    padding: 0 2em;
+}
+.vertical #ruler,
+.vertical #content {
+    font-family: serif;
+    -webkit-writing-mode: vertical-rl;
+}
+
+.horizontal #content {
+    padding: 3em 5em;
+    height: inherit;
+    width: 40%;
+    min-width: 20em;
+    margin-left: auto;
+    margin-right: auto;
+}
+.horizontal #ruler {
+    padding: 3em 0;
+    width: 1em;
+    position: absolute;
+    left: 15%;
+}
+.horizontal #ruler,
+.horizontal #content {
+    font-family: IPAexGothic;
+    -webkit-writing-mode: horizontal-tb;
+}
+
+#content.dropping {
+    background-color: Highlight;
+}
+#ruler {
+    color: #999;
+}
+#ruler .page-marker {
+    -webkit-writing-mode: horizontal-tb;
+}
+p {
+    margin: 0
+}
+
+#meta {
+    font-family: Georgia;
+    font-size: 90%;
+    background-color: #aaa;
+    color: #fff;
+    padding: 0.3em 0.6em;
+    position: fixed;
+    top: 2em;
+    left: 3em;
+    opacity: 0.3;
+}
+#meta:hover {
+    opacity: 0.6;
+}
+#meta #title {
+    font-size: x-large;
+}
+#meta .action {
+    padding: 0 0.2em;
+    color: #fff;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: larger;
+    text-decoration: none;
+    cursor: pointer;
+}
+#meta .action:hover {
+    color: #77e;
+}
+#meta #title-extension {
+    display: none;
+}
+#meta:hover #title-extension {
+    display: inline;
+}
