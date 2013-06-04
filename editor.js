@@ -1,14 +1,37 @@
+function WrappedDeferred (object) {
+    this._ = this.object = object;
+    this.deferred = $.Deferred();
+
+    this._ok = this.deferred.resolve;
+    this._ng = this.deferred.reject;
+
+    this.deferred.done(function (x) {
+        console.log('[done]', object, x);
+    }).fail(function (x) {
+        console.log('[fail]', object, x);
+    });
+}
+
+WrappedDeferred.prototype = {
+    then:    function () { return this.deferred.then   .apply(this.deferred, arguments) },
+    done:    function () { return this.deferred.done   .apply(this.deferred, arguments) },
+    fail:    function () { return this.deferred.fail   .apply(this.deferred, arguments) },
+    promise: function () { return this.deferred.promise.apply(this.deferred, arguments) }
+};
+
+function defer (object) { return new WrappedDeferred(object) }
+
 var Notification = {
     error: function (title, message) {
         console.error(title, message);
         webkitNotifications.createNotification(
-            '', title || 'Error', message
+            '', title || 'Error', message || ''
         ).show();
     },
     notify: function (title, message) {
         console.log(title, message);
         webkitNotifications.createNotification(
-            '', title || 'Notification', message
+            '', title || 'Notification', message || ''
         ).show();
     }
 };
@@ -74,25 +97,43 @@ var Session = {
                 throw 'file not loaded';
             }
 
-            this.fileEntry.createWriter(function (writer) {
-                var content = Session.content.get(),
-                    blob = new Blob([ content ], { type: 'text/plain' });
+            var content = Session.content.get(),
+                blob = new Blob([ content ], { type: 'text/plain' });
 
-                writer.onerror = function (e) {
-                    Notification.error('Writing file failed', writer.error);
-                };
-                writer.onwriteend = function (e) {
-                    writer.onwriteend = function (e) {
-                        Notification.notify('File wrote');
-                    };
-                    writer.seek(0)
-                    writer.write(blob);
-                };
+            with (defer(this.fileEntry)) {
+                _.createWriter(_ok, _ng);
 
-                writer.truncate(blob.size);
-            }, function (e) {
-                Notification.error('Creating writer failed', e);
-            });
+                var writer;
+
+                then(function (w) { writer = w }).
+
+                then(function () {
+                    with (defer(writer)) {
+                        _.onwriteend = _ok;
+                        _.onerror    = _ng;
+                        _.truncate(blob.size);
+                        return deferred;
+                    }
+                }).
+
+                then(function () {
+                    with (defer(writer)) {
+                        _.onwriteend = _ok;
+                        _.onerror    = _ng;
+                        _.seek(0);
+                        _.write(blob);
+                        return deferred;
+                    }
+                }).
+
+                then(function () {
+                    Notification.notify('File wrote');
+                }).
+
+                fail(function (e) {
+                    Notification.error('Writing file failed', writer && writer.error || e);
+                });
+            }
         },
 
         open: function (fileEntry) {
@@ -100,12 +141,19 @@ var Session = {
 
             this.reset();
 
-            fileEntry.file(function (file) {
-                var reader = new FileReader();
-                reader.onerror = function (e) {
-                    Notification.error('Reading file failed', e);
-                };
-                reader.onload = function (e) {
+            with (defer(fileEntry)) {
+                _.file(_ok, _ng);
+
+                then(function (file) {
+                    with (defer(new FileReader())) {
+                        _.onload  = _ok;
+                        _.onerror = _ng;
+                        _.readAsText(file);
+                        return deferred;
+                    }
+                }).
+
+                then(function (e) {
                     e.target.result.split(/\n/).forEach(function (line) {
                         $('#content').append(
                             document.createTextNode(line), '<br>'
@@ -125,12 +173,12 @@ var Session = {
                             $('#title-extension').text(m[2]);
                         }
                     });
-                };
+                }).
 
-                reader.readAsText(file);
-            }, function (e) {
-                Notification.error('Opening file failed', e);
-            });
+                fail(function (e) {
+                    Notification.error('Opening file failed', e);
+                });
+            }
         }
     }
 };
