@@ -21,11 +21,32 @@ WrappedDeferred.prototype = {
 
 function defer (object) { return new WrappedDeferred(object) }
 
+function describeError (error) {
+    if (!error || typeof error === 'string') {
+        return error;
+    }
+
+    var a = [ '[' + error.constructor.name + ']' ];
+
+    if ('code' in error) {
+        var code = error.code;
+        for (var constantName in error.constructor.prototype) {
+            if (!/^[A-Z]/.exec(constantName)) continue;
+            if (error.constructor.prototype[constantName] === code) {
+                a.push(constantName);
+                break;
+            }
+        }
+    }
+
+    return a.join(' ');
+}
+
 var Notification = {
     error: function (title, message) {
         console.error(title, message);
         webkitNotifications.createNotification(
-            '', title || 'Error', message || ''
+            '', title || 'Error', describeError(message)
         ).show();
     },
     notify: function (title, message) {
