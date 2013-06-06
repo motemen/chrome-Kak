@@ -114,14 +114,16 @@ var Session = {
         },
 
         save: function () {
-            if (!this.fileEntry) {
+            var fileEntry = this.fileEntry;
+
+            if (!fileEntry) {
                 throw 'file not loaded';
             }
 
             var content = Session.content.get(),
                 blob = new Blob([ content ], { type: 'text/plain' });
 
-            with (defer(this.fileEntry)) {
+            with (defer(fileEntry)) {
                 _.createWriter(_ok, _ng);
 
                 var writer;
@@ -148,7 +150,9 @@ var Session = {
                 }).
 
                 then(function () {
-                    Notification.notify('File wrote');
+                    chrome.fileSystem.getDisplayPath(fileEntry, function (path) {
+                        Notification.notify('File wrote', path);
+                    });
                 }).
 
                 fail(function (e) {
