@@ -208,6 +208,88 @@ var Session = {
     }
 };
 
+var Tools = {
+    YahooKousei: {
+        execute: function () {
+            with (defer(chrome.storage.local)) {
+                _.get(null, _ok);
+
+                then(function (s) {
+                    return $.ajax(
+                        'http://jlp.yahooapis.jp/KouseiService/V1/kousei', {
+                            method: 'POST',
+                            dataType: 'xml',
+                            data: {
+                                appid: s.preferences.YahooKousei.appid,
+                                sentence: Session.content.get()
+                            }
+                        }
+                    );
+                }).
+
+                then(function (r) {
+                    var results  = r.querySelectorAll('Result');
+
+                    var cursor = {
+                        pos: 0,
+                        node: null,
+                        next: function () {
+                            this.pos += this.text().length;
+                            return this.node = this._contents.shift();
+                        },
+                        text: function () {
+                            var node = this.node;
+                            if (!node) {
+                                return "";
+                            } else if (node.nodeName === 'BR') {
+                                return "\n";
+                            } else if (node.nodeName === '#text') {
+                                return node.textContent;
+                            } else {
+                                return "";
+                            }
+                        },
+                        advanceTo: function (pos) {
+                            while (pos > this.pos + this.text().length) {
+                                this.next();
+                            }
+                        },
+                        _contents: $('#content').contents().toArray()
+                    };
+                    cursor.next();
+
+                    var points = [];
+
+                    // 結果がソートされている前提
+                    $.each(results, function () {
+                        var range = document.createRange();
+                        var startPos = Number(this.querySelector('StartPos').textContent),
+                            endPos   = startPos + Number(this.querySelector('Length').textContent),
+                            word     = this.querySelector('ShitekiWord').textContent,
+                            info     = this.querySelector('ShitekiInfo').textContent;
+
+                        cursor.advanceTo(startPos);
+                        range.setStart(cursor.node, startPos - cursor.pos);
+
+                        cursor.advanceTo(endPos);
+                        range.setEnd(cursor.node, endPos - cursor.pos);
+
+                        points.push({ range: range, word: word, info: info });
+                    });
+
+                    $.each(points, function () {
+                        this.range.surroundContents(
+                            $('<span class="yahoo-kousei"></span>')
+                                .attr('data-yahoo-kousei-shiteki-word', this.word)
+                                .attr('data-yahoo-kousei-shiteki-info', this.info)[0]
+                        );
+                    });
+                });
+            }
+        }
+    }
+};
+
 $(function () {
     $('#toggle-orientation').click(function () {
         Session.orientation.toggle();

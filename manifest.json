@@ -11,6 +11,8 @@
     "permissions": [
         { "fileSystem": ["write"] },
         "notifications",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "storage",
+        "http://jlp.yahooapis.jp/KouseiService/V1/kousei"
     ]
 }
