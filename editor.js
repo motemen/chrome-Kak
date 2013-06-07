@@ -42,6 +42,51 @@ function describeError (error) {
     return a.join(' ');
 }
 
+var UI = {
+    background: function () {
+        var d = $.Deferred();
+        var background = $('<div id="ui-modal-background">').appendTo(document.body);
+
+        d.always(function () {
+            background.remove();
+        });
+
+        background.one('click', function () { d.resolve() });
+
+        return d;
+    },
+    prompt: function (options) {
+        if (!options) options = {};
+
+        var d = $.Deferred();
+
+        var bg = this.background();
+        d.always(bg.resolve);
+        bg.always(d.reject);
+
+        $('#ui-prompt').show();
+        d.always(function () { $('#ui-prompt').hide() });
+
+        $('#ui-prompt-title').text(options.title || '');
+
+        $('#ui-prompt-input')
+            .attr('placeholder', options.placeholder)
+            .on('keypress.kak-ui', function (e) {
+                if (e.keyCode === 13) {
+                    d.resolve($(this).val());
+                }
+            })
+            .val(options.default || '')
+            .focus();
+
+        d.always(function () {
+            $('#ui-prompt-input').off('.kak-ui');
+        });
+
+        return d;
+    }
+};
+
 var Notification = {
     error: function (title, message) {
         console.error(title, message);
@@ -212,15 +257,33 @@ var Tools = {
     YahooKousei: {
         execute: function () {
             with (defer(chrome.storage.local)) {
-                _.get(null, _ok);
+                _.get('preferences.YahooKousei.appid', _ok);
 
                 then(function (s) {
+                    if (s['preferences.YahooKousei.appid']) {
+                        return s['preferences.YahooKousei.appid'];
+                    }
+
+                    var d = $.Deferred();
+
+                    UI.prompt({ title: 'Yahoo! アプリケーション ID を入力してください' }).done(function (appid) {
+                        chrome.storage.local.set(
+                            { 'preferences.YahooKousei.appid': appid }, function () {
+                                d.resolve(appid);
+                            }
+                        );
+                    });
+
+                    return d;
+                }).
+
+                then(function (appid) {
                     return $.ajax(
                         'http://jlp.yahooapis.jp/KouseiService/V1/kousei', {
                             method: 'POST',
                             dataType: 'xml',
                             data: {
-                                appid: s.preferences.YahooKousei.appid,
+                                appid: appid,
                                 sentence: Session.content.get()
                             }
                         }
