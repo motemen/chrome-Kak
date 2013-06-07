@@ -158,6 +158,18 @@ var Session = {
             $('#title-extension').text('');
         },
 
+        open: function () {
+            var File = this;
+
+            with (defer(chrome.fileSystem)) {
+                _.chooseEntry({ type: 'openWritableFile', accepts: [ { mimeTypes: [ 'text/*' ] } ] }, _ok);
+
+                then(function (fileEntry) {
+                    File.openFileEntry(fileEntry);
+                });
+            }
+        },
+
         save: function () {
             var fileEntry = this.fileEntry;
 
@@ -206,7 +218,7 @@ var Session = {
             }
         },
 
-        open: function (fileEntry) {
+        openFileEntry: function (fileEntry) {
             var File = this;
 
             this.reset();
@@ -366,13 +378,18 @@ $(function () {
         Session.file.save();
     });
 
+    $('#open').click(function () {
+        Session.file.open();
+    });
+
     $('#content')
         .on('kak:change', function (e) {
             View.updateCharacterCount();
         })
         .on('keyup', function (e) {
             $(this).trigger('kak:change');
-        });
+        })
+        .focus();
 });
 
 var dnd = new DnDFileController('#content', function (data) {
@@ -380,6 +397,6 @@ var dnd = new DnDFileController('#content', function (data) {
 
     var fileEntry = data.items[0].webkitGetAsEntry();
     chrome.fileSystem.getWritableEntry(fileEntry, function (writeFileEntry) {
-        Session.file.open(writeFileEntry);
+        Session.file.openFileEntry(writeFileEntry);
     });
 });
