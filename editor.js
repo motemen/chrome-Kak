@@ -110,6 +110,12 @@ var View = {
         $('#character-count').text($('#content').text().length);
     },
     updateRuler: function () {
+        var lastSize = $('#content').data('kak:lastSize') || {};
+        if ($('#content').height() === lastSize.height
+                && $('#content').width() === lastSize.width) {
+            return;
+        }
+
         $('#ruler').empty();
 
         var line = 1,
@@ -118,6 +124,13 @@ var View = {
             $('#ruler').append(line % 20 === 1 ? $('<span class="page-marker">').text(Math.floor(line / 20) + 1) : ' ').append('<br>');
             line++;
         }
+
+        $('#content').data(
+            'kak:lastSize', {
+                height: $('#content').height(),
+                width: $('#content').width()
+            }
+        );
     }
 };
 
@@ -175,6 +188,7 @@ var Session = {
             $(document.body)
                 .toggleClass('horizontal')
                 .toggleClass('vertical');
+            setTimeout(function () { View.updateRuler() }, 1000);
         }
     },
 
@@ -409,6 +423,7 @@ $(function () {
     $('#content')
         .on('kak:change', function (e) {
             View.updateCharacterCount();
+            View.updateRuler();
         })
         .on('keyup', function (e) {
             $(this).trigger('kak:change');
