@@ -89,6 +89,14 @@ p {
 #meta #title {
     font-size: x-large;
 }
+#meta #actions {
+    margin-top: 10px;
+    font-size: x-large;
+    display: none;
+}
+#meta:hover #actions {
+    display: block;
+}
 #meta .action {
     padding: 0 0.2em;
     color: #fff;
@@ -97,8 +105,11 @@ p {
     font-size: larger;
     text-decoration: none;
     cursor: pointer;
+    transition-duration: 0;
 }
-#meta .action:hover {
+#meta .action:hover,
+#meta .action:active
+{
     color: #77e;
 }
 #meta #title-extension {
