@@ -129,6 +129,36 @@ var Session = {
                 content += $(this).is('br') ? '\n' : $(this).text();
             });
             return content;
+        },
+        set: function (content) {
+            $('#content').empty();
+
+            content.split(/\n/).forEach(function (line) {
+                $('#content').append(
+                    document.createTextNode(line), '<br>'
+                );
+            });
+
+            $('#content').trigger('kak:change');
+        }
+    },
+    backup: {
+        save: function () {
+            var content = Session.content.get();
+            chrome.storage.local.set(
+                { backup: content }, function () {
+                    console.log('backup saved')
+                }
+            );
+        },
+        restore: function () {
+            with (defer(chrome.storage.local)) {
+                _.get('backup', _ok);
+
+                then(function (s) {
+                    Session.content.set(s['backup']);
+                });
+            }
         }
     },
     orientation: {
@@ -236,15 +266,9 @@ var Session = {
                 }).
 
                 then(function (e) {
-                    e.target.result.split(/\n/).forEach(function (line) {
-                        $('#content').append(
-                            document.createTextNode(line), '<br>'
-                        );
-                    });
+                    Session.content.set(e.target.result);
 
                     File.fileEntry = fileEntry;
-
-                    $('#content').trigger('kak:change');
 
                     View.focus();
 
@@ -390,8 +414,12 @@ $(function () {
             $(this).trigger('kak:change');
         })
         .focus();
-});
 
+    var backupTimer; $('#content').on('kak:change', function (e) {
+        if (backupTimer) clearTimeout(backupTimer);
+        backupTimer = setTimeout(function () { Session.backup.save() }, 300);
+    });
+});
 
 var dnd = new DnDFileController('body', function (data) {
     var fileEntry = data.items[0].webkitGetAsEntry();
