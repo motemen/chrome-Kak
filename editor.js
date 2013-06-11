@@ -407,9 +407,11 @@ $(function () {
     $('#toggle-orientation').click(function () {
         Session.orientation.toggle();
 
+        /*
         webkitNotifications.createNotification(
             '', 'Orientation changed', 'Orientation changed to ' + Session.orientation.get() + '.'
         ).show();
+        */
     });
 
     $('#save').click(function () {
