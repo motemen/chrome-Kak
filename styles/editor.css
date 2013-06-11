@@ -59,9 +59,13 @@ body {
     border-bottom: 1px dotted red;
 }
 
-#content.dropping {
+.dropping {
     background-color: Highlight;
 }
+.dropping #content {
+    opacity: 0.5;
+}
+
 #ruler {
     color: #999;
 }

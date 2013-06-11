@@ -392,9 +392,8 @@ $(function () {
         .focus();
 });
 
-var dnd = new DnDFileController('#content', function (data) {
-    $('#content').empty();
 
+var dnd = new DnDFileController('body', function (data) {
     var fileEntry = data.items[0].webkitGetAsEntry();
     chrome.fileSystem.getWritableEntry(fileEntry, function (writeFileEntry) {
         Session.file.openFileEntry(writeFileEntry);
