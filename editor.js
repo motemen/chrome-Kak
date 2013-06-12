@@ -158,6 +158,8 @@ var Session = {
     backup: {
         save: function () {
             var content = Session.content.get();
+            if (content.length === 0) return;
+
             chrome.storage.local.set(
                 { backup: content }, function () {
                     console.log('backup saved')
@@ -172,6 +174,9 @@ var Session = {
                     Session.content.set(s['backup']);
                 });
             }
+        },
+        clear: function () {
+            chrome.storage.local.remove('backup');
         }
     },
     orientation: {
@@ -254,6 +259,8 @@ var Session = {
                     chrome.fileSystem.getDisplayPath(fileEntry, function (path) {
                         Notification.notify('File wrote', path);
                     });
+
+                    Session.backup.clear();
                 }).
 
                 fail(function (e) {
@@ -406,12 +413,6 @@ var Tools = {
 $(function () {
     $('#toggle-orientation').click(function () {
         Session.orientation.toggle();
-
-        /*
-        webkitNotifications.createNotification(
-            '', 'Orientation changed', 'Orientation changed to ' + Session.orientation.get() + '.'
-        ).show();
-        */
     });
 
     $('#save').click(function () {
@@ -423,19 +424,21 @@ $(function () {
     });
 
     $('#content')
+        .on('keyup', function (e) {
+            $(this).trigger('kak:userChange');
+        })
+        .on('kak:userChange', function (e) {
+            Session.backup.save();
+            $(this).trigger('kak:change');
+        })
         .on('kak:change', function (e) {
             View.updateCharacterCount();
             View.updateRuler();
         })
-        .on('keyup', function (e) {
-            $(this).trigger('kak:change');
-        })
         .focus();
 
-    var backupTimer; $('#content').on('kak:change', function (e) {
-        if (backupTimer) clearTimeout(backupTimer);
-        backupTimer = setTimeout(function () { Session.backup.save() }, 300);
-    });
+
+    Session.backup.restore();
 });
 
 var dnd = new DnDFileController('body', function (data) {
