@@ -17,6 +17,7 @@ body {
 #content {
     background-color: #fff;
     -webkit-user-modify: read-write-plaintext-only;
+    -webkit-font-smoothing: antialiased;
 }
 
 .vertical #content {
