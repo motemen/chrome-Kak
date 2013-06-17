@@ -1,3 +1,6 @@
 [submodule "Font-Awesome"]
 	path = Font-Awesome
 	url = git://github.com/FortAwesome/Font-Awesome.git
+[submodule "tipsy"]
+	path = tipsy
+	url = git://github.com/jaz303/tipsy.git
