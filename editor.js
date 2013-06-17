@@ -439,6 +439,7 @@ $(function () {
         })
         .focus();
 
+    $('#actions .action').tipsy();
 
     Session.backup.restore();
 });
