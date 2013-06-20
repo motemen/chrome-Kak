@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Kak - Option</title>
+<link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
+<script src="jquery/jquery.min.js"></script>
+<script src="options.js"></script>
+<style>
+body {
+  font-family: Georgia, serif;
+  margin 20px 60px;
+}
+dt {
+  font-weight: bold;
+  font-size: larger;
+  margin: 0.3em;
+}
+dd {
+  margin-bottom: 1em;
+}
+input {
+  font-size: 110%;
+  padding: 6px 8px;
+  border: 1px solid #CCC;
+  width: 200px;
+}
+input:focus {
+  border: 1px solid #999;
+  outline: none;
+}
+input[disabled] {
+  background-color: #EEE;
+}
+</style>
+</head>
+<body>
+<h1>Options</h1>
+
+<section>
+<h1>Horizontal</h1>
+<dl>
+  <dt>Font</dt>
+  <dd>
+    <input type="text" placeholder="" value="" data-preference-key="preference.style.horizontal.font-family">
+  </dd>
+</dl>
+</section>
+
+<section>
+<h1>Vertical</h1>
+<dl>
+  <dt>Font</dt>
+  <dd>
+    <input type="text" placeholder="" value="" data-preference-key="preference.style.vertical.font-family">
+  </dd>
+</dl>
+</section>
+
+</body>
+</html>

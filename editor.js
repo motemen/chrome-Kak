@@ -407,6 +407,10 @@ var Tools = {
 };
 
 $(function () {
+    $('#options').click(function () {
+        chrome.app.window.create('options.html');
+    });
+
     $('#toggle-orientation').click(function () {
         Session.orientation.toggle();
     });
@@ -443,4 +447,15 @@ var dnd = new DnDFileController('body', function (data) {
     chrome.fileSystem.getWritableEntry(fileEntry, function (writeFileEntry) {
         Session.file.openFileEntry(writeFileEntry);
     });
+});
+
+chrome.storage.local.get({
+    'preference.style.horizontal.font-family': 'sans-serif',
+    'preference.style.vertical.font-family': 'serif'
+}, function (s) {
+    var css = [
+        '.horizontal #content { font-family: ' + s['preference.style.horizontal.font-family'] + '; }',
+          '.vertical #content { font-family: ' + s['preference.style.vertical.font-family']   + '; }'
+    ].join("\n");
+    $('<style>').html(css).appendTo('head');
 });
