@@ -146,13 +146,7 @@ var Session = {
         set: function (content) {
             $('#content').empty();
 
-            if (content) {
-                content.split(/\n/).forEach(function (line) {
-                    $('#content').append(
-                        document.createTextNode(line), '<br>'
-                    );
-                });
-            }
+            $('#content').text(content);
 
             $('#content').trigger('kak:change');
         }

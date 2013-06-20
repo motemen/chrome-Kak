@@ -13,16 +13,22 @@ body {
 #content, #ruler {
     margin: 2% 0;
     line-height: 1.7em;
+    zoom: 1.4;
 }
 #content {
+    white-space: pre-wrap;
     background-color: #fff;
     -webkit-user-modify: read-write-plaintext-only;
     -webkit-font-smoothing: antialiased;
 }
+#content:focus {
+    outline: none;
+}
 
 .vertical #content {
     padding: 3em 2em;
-    height: 20.5em;
+    /* height: 20.5em; */
+    height: 60%;
 }
 .vertical #ruler {
     height: 1em;
