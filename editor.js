@@ -88,17 +88,21 @@ var UI = {
 };
 
 var Notification = {
+    TIMEOUT: 3000,
+    _show: function (a, b, c) {
+        var notification = webkitNotifications.createNotification(a, b, c);
+
+        notification.show();
+
+        setTimeout(function () { notification.close() }, Notification.TIMEOUT);
+    },
     error: function (title, message) {
         console.error(title, message);
-        webkitNotifications.createNotification(
-            '', title || 'Error', describeError(message)
-        ).show();
+        this._show('', title || 'Error', describeError(message));
     },
     notify: function (title, message) {
         console.log(title, message);
-        webkitNotifications.createNotification(
-            '', title || 'Notification', message || ''
-        ).show();
+        this._show('', title || 'Notification', message || '');
     }
 };
 
