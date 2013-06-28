@@ -3,7 +3,7 @@ $(function () {
 
     chrome.storage.local.get({
         'preference.style.horizontal.font-family': 'sans-serif',
-        'preference.style.vertical.font-family': 'serif'
+        'preference.style.vertical.font-family':   'serif'
     }, function (s) {
         $('[data-preference-key]')
             .val(function () {

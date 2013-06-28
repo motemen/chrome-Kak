@@ -110,25 +110,37 @@ var View = {
         $('#character-count').text($('#content').text().length);
     },
     updateRuler: function () {
-        var lastSize = $('#content').data('kak:lastSize') || {};
-        if ($('#content').height() === lastSize.height
-                && $('#content').width() === lastSize.width) {
+        var $content = $('#content'),
+            $ruler   = $('#ruler');
+
+        var lastSize = $content.data('kak:lastSize') || {};
+        if ($content.height() === lastSize.height
+                && $content.width() === lastSize.width) {
             return;
         }
 
-        $('#ruler').empty();
+        $ruler.empty();
 
-        var line = 1,
+        var line = 0,
+            page = 0,
             dimension = Session.orientation.isVertical() ? 'width' : 'height';
-        while ($('#ruler')[dimension]() < $('#content')[dimension]()) {
-            $('#ruler').append(line % 20 === 1 ? $('<span class="page-marker">').text(Math.floor(line / 20) + 1) : ' ').append('<br>');
-            line++;
+        while ($ruler[dimension]() < $content[dimension]()) {
+            if (line++ % 20 === 0) {
+                page++;
+                $ruler.append($('<div class="page-marker">').attr('data-page', page));
+            }
+
+            var marker = $('<div class="line-marker">').text('.').attr({
+                'data-line': line,
+                'data-page': page
+            });
+            $ruler.find('.page-marker:last-child').append(marker);
         }
 
-        $('#content').data(
+        $content.data(
             'kak:lastSize', {
-                height: $('#content').height(),
-                width: $('#content').width()
+                height: $content.height(),
+                width: $content.width()
             }
         );
     }

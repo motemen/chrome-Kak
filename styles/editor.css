@@ -12,8 +12,14 @@ body {
 }
 #content, #ruler {
     margin: 2% 0;
-    line-height: 1.7em;
     zoom: 1.4;
+}
+#ruler .line-marker {
+    visibility: hidden;
+}
+#ruler .line-marker:first-child:after {
+    visibility: visible;
+    content: attr(data-page);
 }
 #content {
     white-space: pre-wrap;
@@ -37,6 +43,7 @@ body {
 .vertical #ruler,
 .vertical #content {
     font-family: serif;
+    line-height: 1.9;
     -webkit-writing-mode: vertical-rl;
 }
 .vertical span.yahoo-kousei {
@@ -60,6 +67,7 @@ body {
 .horizontal #ruler,
 .horizontal #content {
     font-family: IPAexGothic;
+    line-height: 1.7;
     -webkit-writing-mode: horizontal-tb;
 }
 .horizontal span.yahoo-kousei {
@@ -76,9 +84,7 @@ body {
 #ruler {
     color: #999;
 }
-#ruler .page-marker {
-    -webkit-writing-mode: horizontal-tb;
-}
+
 p {
     margin: 0
 }
