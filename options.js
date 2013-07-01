@@ -1,23 +1,26 @@
 $(function () {
-    $('input').attr('disabled', true);
+    $('input[name]').attr('disabled', true);
 
-    chrome.storage.local.get({
-        'preference.style.horizontal.font-family': 'sans-serif',
-        'preference.style.vertical.font-family':   'serif'
-    }, function (s) {
-        $('[data-preference-key]')
+    Prefs.get().done(function (prefs) {
+        $('input[name]:not(:radio)')
             .val(function () {
-                return s[ $(this).data('preference-key') ];
+                return prefs[ $(this).attr('name') ];
             })
             .keyup(function () {
-                var update = {};
-                update[ $(this).data('preference-key') ] = $(this).val();
+                Prefs.set($(this).attr('name'), $(this).val()).done(function (u) {
+                    console.log('saved', u);
+                });
+            })
+            .attr('disabled', null);
 
-                chrome.storage.local.set(
-                    update, function () {
-                        console.log(update);
-                    }
-                );
+        $('input[name]:radio')
+            .attr('checked', function () {
+                return $(this).val() === prefs[ $(this).attr('name') ];
+            })
+            .click(function () {
+                Prefs.set($(this).attr('name'), $(this).val()).done(function (u) {
+                    console.log('saved', u);
+                });
             })
             .attr('disabled', null);
     });

@@ -465,13 +465,10 @@ var dnd = new DnDFileController('body', function (data) {
     });
 });
 
-chrome.storage.local.get({
-    'preference.style.horizontal.font-family': 'sans-serif',
-    'preference.style.vertical.font-family': 'serif'
-}, function (s) {
+Prefs.get().done(function (prefs) {
     var css = [
-        '.horizontal #content { font-family: ' + s['preference.style.horizontal.font-family'] + '; }',
-          '.vertical #content { font-family: ' + s['preference.style.vertical.font-family']   + '; }'
+        '.horizontal #content, .horizontal #ruler { font-family: ' + prefs['style.horizontal.font-family'] + '; }',
+          '.vertical #content, .horizontal #ruler { font-family: ' + prefs['style.vertical.font-family']   + '; }'
     ].join("\n");
     $('<style>').html(css).appendTo('head');
 });
