@@ -4,6 +4,7 @@
 <title>Kak - Option</title>
 <link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
 <script src="jquery/jquery.min.js"></script>
+<script src="prefs.js"></script>
 <script src="options.js"></script>
 <style>
 body {
@@ -31,6 +32,12 @@ input:focus {
 input[disabled] {
   background-color: #EEE;
 }
+input[type="radio"] {
+  width: auto;
+}
+input[type="number"] {
+  text-align: right;
+}
 </style>
 </head>
 <body>
@@ -41,7 +48,20 @@ input[disabled] {
 <dl>
   <dt>Font</dt>
   <dd>
-    <input type="text" placeholder="" value="" data-preference-key="preference.style.horizontal.font-family">
+    <input type="text" placeholder="" name="style.horizontal.font-family">
+  </dd>
+  <dt>Width</dt>
+  <dd>
+    <label>
+      <input type="radio" name="style.horizontal.width.unit" value="em">
+      <input type="number" placeholder="" name="style.horizontal.width.em" min="1">
+      em
+    </label><br>
+    <label>
+      <input type="radio" name="style.horizontal.width.unit" value="%">
+      <input type="number" placeholder="" name="style.horizontal.width.percent" min="1" max="100">
+      %
+    </label>
   </dd>
 </dl>
 </section>
@@ -51,7 +71,20 @@ input[disabled] {
 <dl>
   <dt>Font</dt>
   <dd>
-    <input type="text" placeholder="" value="" data-preference-key="preference.style.vertical.font-family">
+    <input type="text" placeholder="" name="style.vertical.font-family">
+  </dd>
+  <dt>Height</dt>
+  <dd>
+    <label>
+      <input type="radio" name="style.vertical.height.unit" value="em">
+      <input type="number" placeholder="" name="style.vertical.height.em" min="1">
+      em
+    </label><br>
+    <label>
+      <input type="radio" name="style.vertical.height.unit" value="%">
+      <input type="number" placeholder="" name="style.vertical.height.percent" min="1" max="100">
+      %
+    </label>
   </dd>
 </dl>
 </section>
