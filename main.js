@@ -10,6 +10,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
     var height =  768;
 
     chrome.app.window.create('editor.html', {
+        id: 'editor',
         bounds: {
             width: width,
             height: height,

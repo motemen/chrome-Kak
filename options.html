@@ -9,7 +9,7 @@
 <style>
 body {
   font-family: Georgia, serif;
-  margin 20px 60px;
+  margin: 20px 40px;
 }
 dt {
   font-weight: bold;
@@ -38,10 +38,17 @@ input[type="radio"] {
 input[type="number"] {
   text-align: right;
 }
+button {
+  vertical-align: middle;
+}
 </style>
 </head>
 <body>
-<h1>Options</h1>
+
+<h1>
+  Options
+  <button id="action-save">Save</button>
+</h1>
 
 <section>
 <h1>Horizontal</h1>
@@ -59,7 +66,7 @@ input[type="number"] {
     </label><br>
     <label>
       <input type="radio" name="style.horizontal.width.unit" value="%">
-      <input type="number" placeholder="" name="style.horizontal.width.percent" min="1" max="100">
+      <input type="number" placeholder="" name="style.horizontal.width.%" min="1" max="100">
       %
     </label>
   </dd>
@@ -82,7 +89,7 @@ input[type="number"] {
     </label><br>
     <label>
       <input type="radio" name="style.vertical.height.unit" value="%">
-      <input type="number" placeholder="" name="style.vertical.height.percent" min="1" max="100">
+      <input type="number" placeholder="" name="style.vertical.height.%" min="1" max="100">
       %
     </label>
   </dd>

@@ -112,14 +112,24 @@ var View = {
     },
     updateStyles: function () {
         Prefs.get().done(function (prefs) {
-            $('style#customized-styles').remove();
+            var _try = function () {
+                if (typeof less.modifyVars === 'function') {
+                    less.modifyVars({
+                        '@horizontal-font-family': prefs['style.horizontal.font-family'],
+                        '@horizontal-width':       prefs[ 'style.horizontal.width.' + prefs['style.horizontal.width.unit'] ] + prefs['style.horizontal.width.unit'],
+                        '@vertical-font-family':   prefs['style.vertical.font-family'],
+                        '@vertical-height':        prefs[ 'style.vertical.height.' + prefs['style.vertical.height.unit'] ] + prefs['style.vertical.height.unit']
+                    });
 
-            var css = [
-                '.horizontal #content, .horizontal #ruler { font-family: ' + prefs['style.horizontal.font-family'] + '; }',
-                  '.vertical #content, .horizontal #ruler { font-family: ' + prefs['style.vertical.font-family']   + '; }'
-            ].join("\n");
+                    setTimeout(function () { View.updateRuler }, 1000);
 
-            $('<style>').attr('id', 'customized-styles').html(css).appendTo('head');
+                    return;
+                }
+
+                setTimeout(_try, 100);
+            };
+
+            _try();
         });
     },
     updateCharacterCount: function () {
@@ -135,23 +145,25 @@ var View = {
             return;
         }
 
-        $ruler.empty();
+        Prefs.get('style.' + Session.orientation.get() + '.page.lines').done(function (linesPerPage) {
+            $ruler.empty();
 
-        var line = 0,
-            page = 0,
-            dimension = Session.orientation.isVertical() ? 'width' : 'height';
-        while ($ruler[dimension]() < $content[dimension]()) {
-            if (line++ % 20 === 0) {
-                page++;
-                $ruler.append($('<div class="page-marker">').attr('data-page', page));
+            var line = 0,
+                page = 0,
+                dimension = Session.orientation.isVertical() ? 'width' : 'height';
+            while ($ruler[dimension]() < $content[dimension]()) {
+                if (line++ % linesPerPage === 0) {
+                    page++;
+                    $ruler.append($('<div class="page-marker">').attr('data-page', page));
+                }
+
+                var marker = $('<div class="line-marker">').text('.').attr({
+                    'data-line': line,
+                    'data-page': page
+                });
+                $ruler.find('.page-marker:last-child').append(marker);
             }
-
-            var marker = $('<div class="line-marker">').text('.').attr({
-                'data-line': line,
-                'data-page': page
-            });
-            $ruler.find('.page-marker:last-child').append(marker);
-        }
+        });
 
         $content.data(
             'kak:lastSize', {
@@ -436,7 +448,16 @@ var Tools = {
 
 $(function () {
     $('#options').click(function () {
-        chrome.app.window.create('options.html');
+        chrome.app.window.create(
+            'options.html', {
+                id: 'options',
+                singleton: true
+            }, function (created) {
+                created.contentWindow.reflectToEditor = function () {
+                    View.updateStyles();
+                };
+            }
+        );
     });
 
     $('#toggle-orientation').click(function () {
@@ -468,6 +489,8 @@ $(function () {
     $('#actions .action').tipsy();
 
     Session.backup.restore();
+
+    View.updateStyles();
 });
 
 var dnd = new DnDFileController('body', function (data) {
@@ -477,4 +500,4 @@ var dnd = new DnDFileController('body', function (data) {
     });
 });
 
-View.updateStyles();
+var less = { fileAsync: true };
