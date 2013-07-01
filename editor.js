@@ -110,6 +110,18 @@ var View = {
     focus: function () {
         $('#content').focus();
     },
+    updateStyles: function () {
+        Prefs.get().done(function (prefs) {
+            $('style#customized-styles').remove();
+
+            var css = [
+                '.horizontal #content, .horizontal #ruler { font-family: ' + prefs['style.horizontal.font-family'] + '; }',
+                  '.vertical #content, .horizontal #ruler { font-family: ' + prefs['style.vertical.font-family']   + '; }'
+            ].join("\n");
+
+            $('<style>').attr('id', 'customized-styles').html(css).appendTo('head');
+        });
+    },
     updateCharacterCount: function () {
         $('#character-count').text($('#content').text().length);
     },
@@ -465,10 +477,4 @@ var dnd = new DnDFileController('body', function (data) {
     });
 });
 
-Prefs.get().done(function (prefs) {
-    var css = [
-        '.horizontal #content, .horizontal #ruler { font-family: ' + prefs['style.horizontal.font-family'] + '; }',
-          '.vertical #content, .horizontal #ruler { font-family: ' + prefs['style.vertical.font-family']   + '; }'
-    ].join("\n");
-    $('<style>').html(css).appendTo('head');
-});
+View.updateStyles();
