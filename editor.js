@@ -110,6 +110,15 @@ var View = {
     focus: function () {
         $('#content').focus();
     },
+    updateTitle: function () {
+        chrome.fileSystem.getDisplayPath(Session.file.fileEntry, function (path) {
+            var m = path.match(/([^\/]+?)(\.\w+)?$/);
+            if (m) {
+                $('#title-base').text(m[1]);
+                $('#title-extension').text(m[2]);
+            }
+        });
+    },
     updateStyles: function () {
         Prefs.get().done(function (prefs) {
             var _try = function () {
@@ -257,13 +266,34 @@ var Session = {
             }
         },
 
-        save: function () {
-            var fileEntry = this.fileEntry;
+        prepareWritableFileEntry: function (forceNew) {
+            var File = this;
+            var d = $.Deferred();
 
-            if (!fileEntry) {
-                throw 'file not loaded';
+            if (this.fileEntry && !forceNew) {
+                d.resolve(this.fileEntry);
+            } else {
+                chrome.fileSystem.chooseEntry({
+                    type: 'saveFile',
+                    accepts: [ { mimeTypes: [ 'text/*' ], extensions: [ 'txt' ] } ]
+                }, d.resolve);
             }
 
+            return d.then(function (fileEntry) {
+                File.fileEntry = fileEntry;
+                View.updateTitle();
+                with (defer(chrome.fileSystem)) {
+                    _.getWritableEntry(fileEntry, _ok);
+                    return deferred;
+                }
+            });
+        },
+
+        save: function (forceNew) {
+            this.prepareWritableFileEntry(forceNew).then($.proxy(this, 'saveToFileEntry'));
+        },
+
+        saveToFileEntry: function (fileEntry) {
             var content = Session.content.get(),
                 blob = new Blob([ content ], { type: 'text/plain' });
 
@@ -330,14 +360,7 @@ var Session = {
                     File.fileEntry = fileEntry;
 
                     View.focus();
-
-                    chrome.fileSystem.getDisplayPath(fileEntry, function (path) {
-                        var m = path.match(/([^\/]+?)(\.\w+)?$/);
-                        if (m) {
-                            $('#title-base').text(m[1]);
-                            $('#title-extension').text(m[2]);
-                        }
-                    });
+                    View.updateTitle();
                 }).
 
                 fail(function (e) {
