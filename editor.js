@@ -121,7 +121,7 @@ var View = {
                         '@vertical-height':        prefs[ 'style.vertical.height.' + prefs['style.vertical.height.unit'] ] + prefs['style.vertical.height.unit']
                     });
 
-                    setTimeout(function () { View.updateRuler }, 1000);
+                    setTimeout(function () { View.updateRuler(true) }, 1000);
 
                     return;
                 }
@@ -135,14 +135,16 @@ var View = {
     updateCharacterCount: function () {
         $('#character-count').text($('#content').text().length);
     },
-    updateRuler: function () {
+    updateRuler: function (force) {
         var $content = $('#content'),
             $ruler   = $('#ruler');
 
-        var lastSize = $content.data('kak:lastSize') || {};
-        if ($content.height() === lastSize.height
-                && $content.width() === lastSize.width) {
-            return;
+        if (!force) {
+            var lastSize = $content.data('kak:lastSize') || {};
+            if ($content.height() === lastSize.height
+                    && $content.width() === lastSize.width) {
+                return;
+            }
         }
 
         Prefs.get('style.' + Session.orientation.get() + '.page.lines').done(function (linesPerPage) {
