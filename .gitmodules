@@ -4,3 +4,6 @@
 [submodule "tipsy"]
 	path = tipsy
 	url = git://github.com/jaz303/tipsy.git
+[submodule "less.js"]
+	path = less.js
+	url = https://github.com/less/less.js.git
