@@ -1,0 +1,23 @@
+{
+  "name": "chrome-Kak",
+  "version": "0.0.0",
+  "homepage": "https://github.com/motemen/chrome-Kak",
+  "authors": [
+    "motemen <motemen@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "font-awesome": "~4.1.0",
+    "tipsy": "~0.1.7",
+    "less.js": "~1.7.3"
+  }
+}
