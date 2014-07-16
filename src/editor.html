@@ -3,15 +3,15 @@
 <head>
 <title>Kak</title>
 <link rel="stylesheet/less" href="styles/editor.less">
-<link rel="stylesheet" href="Font-Awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="tipsy/src/stylesheets/tipsy.css">
+<!-- inject:vendor:css -->
+<!-- endinject -->
 </head>
 <body class="horizontal">
 <div id="ruler"></div>
 <div id="content" contenteditable="true"></div>
 <div id="meta">
-  <div id="title"><span id="title-base">無題</span><span id="title-extension"></span></div>
-  <strong id="character-count">0</strong> 文字
+  <div id="title"><span id="title-base">no title</span><span id="title-extension"></span></div>
+  <strong id="character-count">0</strong> characters
   <div id="actions">
     <span id="open" class="action" title="Open" tabindex="0"><i class="icon-upload"></i></span>
     <span id="save" class="action" title="Save" tabindex="0"><i class="icon-download"></i></span>
@@ -19,12 +19,12 @@
     <span id="options" class="action" title="Options" tabindex="0"><i class="icon-wrench"></i></span>
   </div>
 </div>
-<script src="jquery/jquery.min.js"></script>
+<script src="prelude.js"></script>
+<!-- inject:vendor:js -->
+<!-- endinject -->
 <script src="js/dnd.js"></script>
-<script src="tipsy/src/javascripts/jquery.tipsy.js"></script>
 <script src="prefs.js"></script>
 <script src="editor.js"></script>
-<script src="less.js/dist/less-1.4.0.js"></script>
 <section id="ui-prompt" class="modal-ui-component">
   <p id="ui-prompt-title"></p>
   <p><input type="text" id="ui-prompt-input"></p>

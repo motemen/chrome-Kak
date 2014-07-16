@@ -524,5 +524,3 @@ var dnd = new DnDFileController('body', function (data) {
         Session.file.openFileEntry(writeFileEntry);
     });
 });
-
-var less = { fileAsync: true };

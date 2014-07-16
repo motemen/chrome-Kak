@@ -19,5 +19,13 @@
     "font-awesome": "~4.1.0",
     "tipsy": "~0.1.7",
     "less.js": "~1.7.3"
+  },
+  "overrides": {
+    "tipsy": {
+      "main": [
+        "src/javascripts/jquery.tipsy.js",
+        "src/stylesheets/tipsy.css"
+      ]
+    }
   }
 }
