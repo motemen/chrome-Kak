@@ -40,3 +40,10 @@ gulp.task('clean', del.bind(null, ['dist']));
 gulp.task('dist', [ 'html', 'scripts', 'styles', 'manifest' ]);
 
 gulp.task('default', [ 'dist' ]);
+
+gulp.task('watch', function () {
+  gulp.watch('src/**/*.html', ['html']);
+  gulp.watch('src/**/*.{css,less}', ['styles']);
+  gulp.watch('src/**/*.js', ['scripts']);
+  gulp.watch('src/manifest.json', ['manifest']);
+});
